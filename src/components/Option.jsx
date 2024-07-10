@@ -7,8 +7,18 @@ const Option = (props) => {
           {
             props.question &&
             props.question.options.map((option) => {
+              let btnClasses = "transition-all duration-200 rounded-lg text-md p-2 capitalize border border-white active:scale-95"
+
+              if(props.selectedOption){
+                if(option === props.question.answer){
+                  btnClasses += " bg-green-500"
+                }else if(option === props.selectedOption && option !== props.question.answer){
+                  btnClasses += " bg-red-500"
+                }
+              }
+
                 return (
-                <button onClick={props.selectOption} className="transition-all duration-200 rounded-lg text-md p-2 capitalize border border-white hover:bg-white hover:text-black active:scale-95">
+                <button onClick={props.selectOption} className={btnClasses}>
                   {option}
                 </button>
                 )
