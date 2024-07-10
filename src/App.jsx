@@ -1,33 +1,41 @@
 // Components
-import FAQ from "./components/FAQ";
-import Header from "./components/Header";
+import Question from "./components/Question";
+import Option from "./components/Option";
 
 // Hooks
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// Data
-import { faqData } from "./data";
 
 const App = () => {
+  const[questionId,setQuestionId] = useState(1);
+  const[question,setQuestion] = useState();
 
-  const [questions,setQuestions] = useState(faqData);
+  const fetchQuestionsFromJsonServer = async () => {
+    const response = await fetch(
+      `http://localhost:3000/questions/${questionId}`
+    );
+    const data = await response.json();
 
-  const toggleAccordion = (index) =>{
-    const cloneQuestions = [...questions]
-    const clickedQuestion = cloneQuestions[index]
-    clickedQuestion.show = !clickedQuestion.show
-
-    setQuestions(cloneQuestions)
+    setQuestion(data);
   }
- 
+
+  useEffect(() => {
+    fetchQuestionsFromJsonServer();
+  }, [questionId])
+
+  const selectOption = () =>{
+    setQuestionId(questionId+1)
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 font-poppins ">
-      <div className="w-[500px] rounded-xl bg-white shadow-lg">
-        <Header />
-        <FAQ questions={questions} faqClick={toggleAccordion} />
+    <div className="h-screen flex items-center justify-center">
+      <div className="container rounded-xl overflow-hidden">
+        <Question question={question} questionId={questionId} />
+        <Option selectOption={selectOption} question={question} />
       </div>
     </div>
   );
 };
+
 
 export default App;
